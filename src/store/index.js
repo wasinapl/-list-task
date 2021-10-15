@@ -13,8 +13,10 @@ export default createStore({
   state,
   getters: {
     getCharacters: (state) => state.characters,
-    getCharactersCount: (state) => state.characters.length,
-    getPagesInfo: (state) => ({ pages: state.info.pages, currentPage: state.currentPage }),
+    getPagesInfo: (state) => ({
+      pages: state.info.pages,
+      currentPage: state.currentPage,
+    }),
     getLoadingStatus: (state) => state.loadingStatus,
   },
   actions: {
@@ -36,35 +38,17 @@ export default createStore({
     searchByName({ commit, state }, name) {
       commit("SET_LOADING_STATUS", true);
       state.filters.name = name;
-      CharacterService.searchWithFilter(state.filters).then((data) => {
-        commit("SET_CHARACTERS", data);
-        commit("SET_LOADING_STATUS", false);
-      }).catch(err => {
-        console.error(err)
-        commit("NOT_FOUND");
-      });
+      searchWithFilter(commit, state);
     },
     filterStatus({ commit, state }, status) {
       commit("SET_LOADING_STATUS", true);
       state.filters.status = status;
-      CharacterService.searchWithFilter(state.filters).then((data) => {
-        commit("SET_CHARACTERS", data);
-        commit("SET_LOADING_STATUS", false);
-      }).catch(err => {
-        console.error(err)
-        commit("NOT_FOUND");
-      });
+      searchWithFilter(commit, state);
     },
     filterGender({ commit, state }, gender) {
       commit("SET_LOADING_STATUS", true);
       state.filters.gender = gender;
-      CharacterService.searchWithFilter(state.filters).then((data) => {
-        commit("SET_CHARACTERS", data);
-        commit("SET_LOADING_STATUS", false);
-      }).catch(err => {
-        console.error(err)
-        commit("NOT_FOUND");
-      });
+      searchWithFilter(commit, state);
     },
   },
   mutations: {
@@ -77,13 +61,25 @@ export default createStore({
       state.characters = characters;
       state.currentPage = page;
     },
-    SET_LOADING_STATUS(state, status){
+    SET_LOADING_STATUS(state, status) {
       state.loadingStatus = status;
     },
     NOT_FOUND(state) {
       state.characters = [];
       state.currentPage = 1;
       state.pages = 1;
-    }
+    },
   },
 });
+
+function searchWithFilter(commit, state) {
+  CharacterService.searchWithFilter(state.filters)
+    .then((data) => {
+      commit("SET_CHARACTERS", data);
+      commit("SET_LOADING_STATUS", false);
+    })
+    .catch((err) => {
+      console.error(err);
+      commit("NOT_FOUND");
+    });
+}
