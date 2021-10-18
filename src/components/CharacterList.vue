@@ -1,5 +1,5 @@
 <template>
-  <el-row :gutter="20" justify="center" v-if="characters">
+  <el-row :gutter="15" justify="center" v-if="characters">
     <el-col
       :xs="24"
       :sm="12"
@@ -8,21 +8,22 @@
       :xl="6"
       v-for="character in characters"
       :key="character.id"
+      style="display: flex; justify-content: center;"
       ><Character :character="character"
     /></el-col>
   </el-row>
   <el-row :gutter="20" justify="center" v-if="!characters">
-    <el-col
-      :xs="24"
-      :sm="12"
-      :md="12"
-      :lg="12"
-      :xl="12"
+    <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+      <el-alert
+        title="Not found characters with this filters"
+        type="error"
+        center
+        show-icon
+        :closable="false"
       >
-      <el-alert title="Not found characters with this filters" type="error" center show-icon :closable="false"> </el-alert>
-      </el-col>
+      </el-alert>
+    </el-col>
   </el-row>
-
 </template>
 
 <script>
@@ -47,7 +48,7 @@ export default {
 </script>
 
 <style scoped>
-.el-col{
+.el-col {
   margin-bottom: 20px;
 }
 </style>
